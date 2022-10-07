@@ -1,8 +1,8 @@
 import pandas as pd
 
-def length_n_streams(df, parameter):
-    min = df.sort_values(by=parameter).head(3)
-    max = df.sort_values(by=parameter, ascending=False).head(3)
+def length_streams_n_dance(df, parameter, n):
+    min = df.sort_values(by=parameter).head(n)
+    max = df.sort_values(by=parameter, ascending=False).head(n)
 
     return max, min
 
