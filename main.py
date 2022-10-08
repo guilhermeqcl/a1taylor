@@ -5,8 +5,9 @@ import numpy as np
 def main():
     data = open("./data/def.csv", "r", encoding="utf-8")
     df = pd.read_csv(data, delimiter="$")
-    #title_in_lyrics(df)
-    print(mod.count_words(df["Title"]))
+    title_in_lyrics(df)
+    valence_by_album(df)
+    danceability_by_album(df)
 
 def length_by_album(df):
     for album in df["Album"].unique():
@@ -52,11 +53,6 @@ def title_in_lyrics(df):
         if word not in ["Edition", "Deluxe", "Platinum", "Feat"]:
             pass
 
-def danceability_by_album(df):
-    for album in df["Album"].unique():
-        select = mod.length_streams_n_dance(df.loc[df["Album"] == album], "Danceability", 1)
-        print(f"{album} - músicas mais dançáveis:\n", select[0][["Title", "Danceability"]], "\n")
-
 def prizes_by_album(df):
     col_list = ["Grammy", "American Music Awards", "Billboard Music Awards", "MTV Video Music Awards", "World Music Awards", "Brit Awards"]
     df["Total Prizes"] = df[col_list].sum(axis=1)  
@@ -65,5 +61,15 @@ def prizes_by_album(df):
 def correlation_test(df):
     correlation_matrix = np.corrcoef(df["Length"].to_numpy(), df["Streams"].to_numpy())
     print(correlation_matrix)
+
+def danceability_by_album(df):
+    for album in df["Album"].unique():
+        select = mod.length_streams_n_dance(df.loc[df["Album"] == album], "Danceability", 1)
+        print(f"{album} - músicas mais dançáveis:\n", select[0][["Title", "Danceability"]], "\n")
+
+def valence_by_album(df):
+    for album in df["Album"].unique():
+        select = mod.length_streams_n_dance(df.loc[df["Album"] == album], "Valence", 1)
+        print(f"{album} - músicas mais positivas:\n", select[0][["Title", "Valence"]], "\n")
             
 main()

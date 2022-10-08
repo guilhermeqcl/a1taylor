@@ -45,7 +45,12 @@ premios["Total Prizes"] = premios[col_list].sum(axis=1)
 sns.barplot(data = premios.sort_values(by='Total Prizes', ascending=False), y='Album', x='Total Prizes').set(title=(f'Prêmios acumulados de cada álbum'))
 plt.show()
 
-#GRÁFICOS DA CORRELAÇÃO
+#GRÁFICOS DA CORRELAÇÃO POPULARIDADE-DURAÇÃO
 musicas_all = df[['Title','Album','Length', 'Popularity']]
 sns.scatterplot(data = musicas_all, y='Popularity', x='Length').set(title=(f'Correlação da popularidade com a duração das músicas'))
+plt.show()
+
+#GRÁFICO DA CORRELAÇÃO DANÇABILIDADE-POSITIVIDADE
+musicas_all = df[['Title','Album','Danceability', 'Valence']]
+sns.scatterplot(data = musicas_all, y='Danceability', x='Valence').set(title=(f'Correlação da dançabilidade com a positividade das músicas'))
 plt.show()
