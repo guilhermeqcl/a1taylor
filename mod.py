@@ -1,7 +1,13 @@
 import pandas as pd
 import numpy as np
 
+<<<<<<< HEAD
 ########################################### FUNÇÕES INTERNAS ##################################################
+=======
+def length_streams_n_dance(df, parameter, n):
+    min = df.sort_values(by=parameter).head(n)
+    max = df.sort_values(by=parameter, ascending=False).head(n)
+>>>>>>> 17d27b35b037190308669805aae5f8377d4593fb
 
 # Retorna as n linhas do dataframe com os maiores valores (ordenados do maior para o menor) do parâmetro passado
 def get_bottom(df, parameter, n):
@@ -15,17 +21,29 @@ def get_top(df, parameter, n):
 # passado e retorna um dataframe com uma coluna, onde cada linha é um elemento 
 def get_elements(df, delimiter):
     set = []
+    ignore = [ 'I', 'i', 'The', 'the', 'And', 'and', 'To', 'to', 'Me', 'me', 'feat', 'Feat',
+              'A', 'a', 'It', 'it', 'In', 'in', 'My', 'my', 'Of', 'of', 'That', 'that', 'This', '&',
+              'this','All', 'all', "I'm", "i'm", 'But', 'but', 'On', 'on', 'Be', 'be', 'Is', 'is', 'demo',
+              'So', 'so','Oh', 'oh', 'Was', 'was', "It's", "it's", 'When', 'when', 'Just', 'just', 'Demo',
+              "You're", "you're", 'For', 'for', 'With', 'with', 'What', 'what', "Don't", "don't", 'Up', 
+              'up', 'Back', 'back', 'If', 'if', 'Out', 'out', "'Cause","'cause", 'At', 'at', 'Are', 'are']
     for row in df:
         for element in row.split(delimiter):
+<<<<<<< HEAD
             # Remove caracteres indesejados da string
             element = element.strip('[],.;!"?()- ').capitalize()
             if len(element) > 0:
                 set.append(element)
+=======
+            if element != "-" and element not in ignore:
+                set.append(element.strip('[],.;!"?()').capitalize())
+>>>>>>> 17d27b35b037190308669805aae5f8377d4593fb
     return pd.DataFrame(set)[0]
 
 # Retorna as n palavras que mais ocorrem nas entradas (strings) de um dataframe composto por uma coluna
 def count_words(df): 
     words_df = get_elements(df, " ")
+<<<<<<< HEAD
     return words_df.value_counts().head(5)
 
 # Conta quantas vezes uma string ("title" - o titulo da musica ou album) ocorre nas letras ("df["Lyrics"]) e em quantas 
@@ -136,3 +154,6 @@ def track_title_in_lyrics(df):
     tracks_with_appearence = sum([1 for x in appearances_list if x != 0])
     print("Número médio de vezes que o titulo de uma música ocorre nas letras:", round(sum(appearances_list)/df["Title"].size, 2))
     print("Porcentagem de músicas que contém o título na letra:", round(100*tracks_with_appearence/df["Title"].size, 2))
+=======
+    return words_df.value_counts().head(10)
+>>>>>>> 17d27b35b037190308669805aae5f8377d4593fb

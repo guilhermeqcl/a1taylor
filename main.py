@@ -1,5 +1,6 @@
 import mod
 import pandas as pd
+import numpy as np
 
 # Abertura dos arquivos com o dataset
 main_data = open("./data/def.csv", "r", encoding="utf-8")
