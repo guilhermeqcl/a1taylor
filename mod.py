@@ -1,13 +1,7 @@
 import pandas as pd
 import numpy as np
 
-<<<<<<< HEAD
 ########################################### FUNÇÕES INTERNAS ##################################################
-=======
-def length_streams_n_dance(df, parameter, n):
-    min = df.sort_values(by=parameter).head(n)
-    max = df.sort_values(by=parameter, ascending=False).head(n)
->>>>>>> 17d27b35b037190308669805aae5f8377d4593fb
 
 # Retorna as n linhas do dataframe com os maiores valores (ordenados do maior para o menor) do parâmetro passado
 def get_bottom(df, parameter, n):
@@ -29,21 +23,15 @@ def get_elements(df, delimiter):
               'up', 'Back', 'back', 'If', 'if', 'Out', 'out', "'Cause","'cause", 'At', 'at', 'Are', 'are']
     for row in df:
         for element in row.split(delimiter):
-<<<<<<< HEAD
             # Remove caracteres indesejados da string
             element = element.strip('[],.;!"?()- ').capitalize()
-            if len(element) > 0:
+            if len(element) > 0 and element not in ignore:
                 set.append(element)
-=======
-            if element != "-" and element not in ignore:
-                set.append(element.strip('[],.;!"?()').capitalize())
->>>>>>> 17d27b35b037190308669805aae5f8377d4593fb
     return pd.DataFrame(set)[0]
 
 # Retorna as n palavras que mais ocorrem nas entradas (strings) de um dataframe composto por uma coluna
 def count_words(df): 
     words_df = get_elements(df, " ")
-<<<<<<< HEAD
     return words_df.value_counts().head(5)
 
 # Conta quantas vezes uma string ("title" - o titulo da musica ou album) ocorre nas letras ("df["Lyrics"]) e em quantas 
@@ -81,44 +69,45 @@ def clean_string(string):
 ######################################## FUNÇÕES PARA RESPONDER AS QUESTÕES #########################################
 
 # Printa uma tabela com as musicas mais longas e mais curtas de cada album
-def length_by_album(df, album):
-    top = get_top(df.loc[df["Album"] == album], "Length", 3)
-    bottom = get_bottom(df.loc[df["Album"] == album], "Length", 3)
+def length_by_album(df, album, n):
+    if album not in df["Album"].unique():
+        raise ValueError
+    top = get_top(df.loc[df["Album"] == album], "Length", n)
+    bottom = get_bottom(df.loc[df["Album"] == album], "Length", n)
     print(f"{album} - músicas mais longas:\n", top[["Title", "Length"]], "\n")
     print(f"{album} - músicas mais curtas:\n", bottom[["Title", "Length"]], "\n\n")
 
 # Printa uma tabela com as musicas mais populares e menos populares de cada album 
-def streams_by_album(df, album):
-    top = get_top(df.loc[df["Album"] == album], "Streams", 3)
-    bottom = get_bottom(df.loc[df["Album"] == album], "Streams", 3)
+def streams_by_album(df, album, n):
+    top = get_top(df.loc[df["Album"] == album], "Streams", n)
+    bottom = get_bottom(df.loc[df["Album"] == album], "Streams", n)
     print(f"{album} - músicas mais ouvidas:\n", top[["Title", "Streams"]], "\n")
     print(f"{album} - músicas menos ouvidas:\n", bottom[["Title", "Streams"]], "\n\n")
 
 # Printa uma tabela com as musicas mais longas e mais curtas dentre toda a discografia
-def length_all(df):
-    top = get_top(df, "Length", 3)
-    bottom = get_bottom(df, "Length", 3)
+def length_all(df, n):
+    top = get_top(df, "Length", n)
+    bottom = get_bottom(df, "Length", n)
     print("Músicas mais longas:\n", top[["Title", "Album", "Length"]], "\n")
     print("Músicas mais curtas:\n", bottom[["Title", "Album", "Length"]], "\n\n")
 
 # Printa uma tabela com as musicas com mais streams e menos streams dentre toda a discografia
-def streams_all(df):
-    top = get_top(df, "Streams", 3)
-    bottom = get_bottom(df, "Streams", 3)
+def streams_all(df, n):
+    top = get_top(df, "Streams", n)
+    bottom = get_bottom(df, "Streams", n)
     print("Músicas mais ouvidas:\n", top[["Title", "Album", "Streams"]], "\n")
     print("Músicas menos ouvidas:\n", bottom[["Title", "Album", "Streams"]], "\n\n")
 
 # Printa uma tabela com os albuns com mais premios
-def prizes_by_album(df):
+def albums_prizes(df, n):
     col_list = ["Grammy", "American Music Awards", "Billboard Music Awards", "MTV Video Music Awards", "World Music Awards", "Brit Awards"]
     df["Total Prizes"] = df[col_list].sum(axis=1)  
-    print("Albuns mais premiados:\n", get_top(df, "Total Prizes", 4)[["Album", "Total Prizes"]])
+    print("Albuns mais premiados:\n", get_top(df, "Total Prizes", n)[["Album", "Total Prizes"]])
   
 # Printa o Coeficiente de Correlação de Pearlson e define o grau de correlação
 def correlation_test(df, var1, var2):
     correlation_coef = np.corrcoef(df[var1].to_numpy(), df[var2].to_numpy())[0][1]
     print(f"Coeficiente de correlação de Pearlson ({var1} e {var2}): {correlation_coef}")
-
   
 # Printa as 5 palavras mais comuns nos titulos dos álbuns
 def words_album(df): 
@@ -141,12 +130,11 @@ def words_lyrics_all(df):
     print(count_words(lyrics), "\n")
 
 # Printa, para cada album, quantas vezes o titulo do album ocorre nas letras das musicas e em quantas musicas ele ocorre.
-def album_title_in_lyrics(df):
-    for album in df["Album"].unique():
-        album_tracks = df.loc[df["Album"] == album]
-        tracks_number = len(album_tracks.index)
-        info = count_repetitions(album_tracks, album)
-        print(f"{album}: \nNumero total de vezes que o titulo ocorre nas letras: {info[0]}\nQuantidade de músicas que contem o titulo do álbum: {info[1]} de {tracks_number}\n")
+def album_title_in_lyrics(df, album):
+    album_tracks = df.loc[df["Album"] == album]
+    tracks_number = len(album_tracks.index)
+    info = count_repetitions(album_tracks, album)
+    print(f"{album}: \nNumero total de vezes que o titulo ocorre nas letras: {info[0]}\nQuantidade de músicas que contem o titulo do álbum: {info[1]} de {tracks_number}\n")
 
 # Printa o numero médio de vezes que o titulo de uma música ocorre nas letras e a porcentagem de músicas que contém seu título na letra
 def track_title_in_lyrics(df):
@@ -154,6 +142,3 @@ def track_title_in_lyrics(df):
     tracks_with_appearence = sum([1 for x in appearances_list if x != 0])
     print("Número médio de vezes que o titulo de uma música ocorre nas letras:", round(sum(appearances_list)/df["Title"].size, 2))
     print("Porcentagem de músicas que contém o título na letra:", round(100*tracks_with_appearence/df["Title"].size, 2))
-=======
-    return words_df.value_counts().head(10)
->>>>>>> 17d27b35b037190308669805aae5f8377d4593fb
