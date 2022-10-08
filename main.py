@@ -5,8 +5,8 @@ import numpy as np
 def main():
     data = open("./data/def.csv", "r", encoding="utf-8")
     df = pd.read_csv(data, delimiter="$")
-    title_in_lyrics(df)
-    length_by_album(df)
+    #title_in_lyrics(df)
+    print(mod.count_words(df["Title"]))
 
 def length_by_album(df):
     for album in df["Album"].unique():
@@ -31,10 +31,10 @@ def streams_all(df):
     print("Músicas menos ouvidas:\n", select[1][["Title", "Album", "Streams"]], "\n\n")
 
 def words_album(df):
-    print("Palavras mais comuns nos titulos dos álbuns: ", mod.count_words(df["Album"].unique()))
+    print("Palavras mais comuns nos titulos dos álbuns:\n", mod.count_words(df["Album"].unique()), sep="")
 
 def words_title(df):
-    print("Palavras mais comuns nos titulos das músicas: ", mod.count_words(df["Title"]))
+    print("Palavras mais comuns nos titulos das músicas:\n", mod.count_words(df["Title"]), sep="")
 
 def words_lyrics_by_album(df):
     for album in df["Album"].unique():

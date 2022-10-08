@@ -34,7 +34,6 @@ most_popular = popularities[0]
 least_popular = popularities[1]
 
 popularity_all = pd.concat([most_popular, least_popular], axis=0)
-print(popularity_all)
 
 sns.barplot(data = popularity_all.sort_values(by='Popularity', ascending=False), y='Title', x='Popularity').set(title=(f'Música mais populares e menos populares de todas'))
 plt.show()
