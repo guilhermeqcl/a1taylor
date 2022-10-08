@@ -15,6 +15,12 @@ def get_top(df, parameter, n):
 # passado e retorna um dataframe com uma coluna, onde cada linha é um elemento 
 def get_elements(df, delimiter):
     set = []
+    ignore = [ 'I', 'i', 'The', 'the', 'And', 'and', 'To', 'to', 'Me', 'me', 'feat', 'Feat',
+              'A', 'a', 'It', 'it', 'In', 'in', 'My', 'my', 'Of', 'of', 'That', 'that', 'This', '&',
+              'this','All', 'all', "I'm", "i'm", 'But', 'but', 'On', 'on', 'Be', 'be', 'Is', 'is', 'demo',
+              'So', 'so','Oh', 'oh', 'Was', 'was', "It's", "it's", 'When', 'when', 'Just', 'just', 'Demo',
+              "You're", "you're", 'For', 'for', 'With', 'with', 'What', 'what', "Don't", "don't", 'Up', 
+              'up', 'Back', 'back', 'If', 'if', 'Out', 'out', "'Cause","'cause", 'At', 'at', 'Are', 'are']
     for row in df:
         for element in row.split(delimiter):
             # Remove caracteres indesejados da string
@@ -135,4 +141,4 @@ def track_title_in_lyrics(df):
     appearances_list = [count_repetitions(df.loc[df["Title"] == track], track.split(" - ")[0])[0] for track in df["Title"]]
     tracks_with_appearence = sum([1 for x in appearances_list if x != 0])
     print("Número médio de vezes que o titulo de uma música ocorre nas letras:", round(sum(appearances_list)/df["Title"].size, 2))
-    print("Porcentagem de músicas que contém o título na letra:", round(100*tracks_with_appearence/df["Title"].size, 2))
+    print("Porcentagem de músicas que contém o título na letra:", round(100*tracks_with_appearence/df["Title"].size, 2)
