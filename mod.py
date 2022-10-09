@@ -27,12 +27,14 @@ def get_top(df, parameter, n):
 # passado e retorna um dataframe com uma coluna, onde cada linha é um elemento 
 def get_elements(df, delimiter):
     set = []
-    ignore = ['I', 'i', 'The', 'the', 'And', 'and', 'To', 'to', 'Me', 'me', 'feat', 'Feat', 'You', 'you', 'A', 'a'
-              'A', 'a', 'It', 'it', 'In', 'in', 'My', 'my', 'Of', 'of', 'That', 'that', 'This', '&', 'Your', 'your', 'we', 'We'
+    ignore = ['I', 'i', 'The', 'the', 'And', 'and', 'To', 'to', 'Me', 'me', 'feat', 'Feat',
+              'A', 'a', 'It', 'it', 'In', 'in', 'My', 'my', 'Of', 'of', 'That', 'that', 'This', '&',
               'this','All', 'all', "I'm", "i'm", 'But', 'but', 'On', 'on', 'Be', 'be', 'Is', 'is', 'demo',
               'So', 'so','Oh', 'oh', 'Was', 'was', "It's", "it's", 'When', 'when', 'Just', 'just', 'Demo',
               "You're", "you're", 'For', 'for', 'With', 'with', 'What', 'what', "Don't", "don't", 'Up', 
-              'up', 'Back', 'back', 'If', 'if', 'Out', 'out', "'Cause","'cause", 'At', 'at', 'Are', 'are', 'Edition', 'edition', 'deluxe', 'Deluxe']
+              'up', 'Back', 'back', 'If', 'if', 'Out', 'out', "'Cause","'cause", 'At', 'at', 'Are', 'are', 
+              'Deluxe', 'Edition', 'Platinum', 'Di', 'di', 'Edition', 'edition', 'deluxe', 'Deluxe']
+
     for row in df:
         for element in row.split(delimiter):
             # Remove caracteres indesejados da string
@@ -169,7 +171,18 @@ def correlation_test(df, var1, var2):
             raise InexistentColumn
         correlation_coef = np.corrcoef(df[var1].to_numpy(), df[var2].to_numpy())[0][1]
         print(f"Coeficiente de correlação de Pearlson ({var1} e {var2}): {correlation_coef}")
-    
+        modl = abs(correlation_coef)
+        if modl < 0.3:
+            print("Correlação desprezível\n")
+        elif modl < 0.5:
+            print("Correlação fraca\n")
+        elif modl < 0.7:
+            print("Correlação média\n")
+        elif modl < 0.9:
+            print("Correlação forte\n")
+        else:
+            print("Correlação muito forte\n")
+
     except InexistentColumn:
         print("Erro: coluna passada não existe no dataframe passado")
     except TypeError:
@@ -230,7 +243,7 @@ def words_lyrics_all(df, n):
     except KeyError:
         print("Erro: dataframe passado não é o correto")
     
-# Printa, para cada album, quantas vezes o titulo do album ocorre nas letras das musicas e em quantas musicas ele ocorre.
+# Printa, para cada album, quantas vezes o titulo do album ocorre nas letras das musicas e em quantas musicas ele ocorre, e diz se é recorrente ou não.
 def album_title_in_lyrics(df, album):
     try:
         if album not in df["Album"].unique():
@@ -238,7 +251,11 @@ def album_title_in_lyrics(df, album):
         album_tracks = df.loc[df["Album"] == album]
         tracks_number = len(album_tracks.index)
         info = count_repetitions(album_tracks, album)
-        print(f"{album}: \nNumero total de vezes que o titulo ocorre nas letras: {info[0]}\nQuantidade de músicas que contem o titulo do álbum: {info[1]} de {tracks_number}\n")
+        print(f"{album}: \nNumero total de vezes que o titulo ocorre nas letras: {info[0]}\nQuantidade de músicas que contem o titulo do álbum: {info[1]} de {tracks_number}")
+        if info[0] > tracks_number*5 and info[1] > tracks_number/2:
+            print("Titulo do album recorrente nas letras\n")
+        else:
+            print("Titulo do album NÃO recorrente nas letras\n")
     except InexistentAlbum:
         print("Erro: album inexistente")
     except KeyError:
@@ -251,6 +268,10 @@ def track_title_in_lyrics(df):
         tracks_with_appearence = sum([1 for x in appearances_list if x != 0])
         print("Número médio de vezes que o titulo de uma música ocorre nas letras:", round(sum(appearances_list)/df["Title"].size, 2))
         print("Porcentagem de músicas que contém o título na letra:", round(100*tracks_with_appearence/df["Title"].size, 2))
+        if sum(appearances_list)/df["Title"].size > 5 and 100*tracks_with_appearence/df["Title"].size > 50:
+            print("O titulo das músicas é recorrente nas letras\n")
+        else:
+            print("O titulo das musicas não é recorrente nas letras\n")
 
     except KeyError:
         print("Erro: dataframe passado não é o correto")
