@@ -17,15 +17,39 @@ class NonPositiveValue(Exception):
 
 # Retorna as n linhas do dataframe com os maiores valores (ordenados do maior para o menor) do parâmetro passado
 def get_bottom(df, parameter, n):
+    """Retorna as n linhas do dataframe com os maiores valores (ordenados do maior para o menor) do parâmetro passado
+    :param df: Dataframe
+    :type df: pd.Dataframe
+    :param parameter: Nome da coluna do Dataframe
+    :type parameter: string
+    :param n: Número de linhas retornado
+    :type n: int
+    :return: Dataframe ordenado
+    :rtype: pd.Dataframe
+    """  
     return df.sort_values(by=parameter).head(n)
 
 # Retorna as n linhas do dataframe com os menores valores (ordenados do menor para o maior) do parâmetro passado
 def get_top(df, parameter, n):
+    """Função que retorna as n linhas do dataframe com os menores valores (ordenados do menor para o maior) do parâmetro passado.
+    :param df: Dataframe
+    :type df: pd.Dataframe
+    :param parameter: Nome da coluna do Dataframe
+    :type parameter: string
+    :param n: Número de linhas retornado
+    :type n: int
+    :return: Dataframe ordenado
+    :rtype: pd.Dataframe
+    """ 
     return df.sort_values(by=parameter, ascending=False).head(n)
 
 # Recebe uma coluna de um dataframe composta por strings ("df"), quebra-a em "elementos" de acordo com o separador ("delimiter")
 # passado e retorna um dataframe com uma coluna, onde cada linha é um elemento 
 def get_elements(df, delimiter):
+    """Função que recebe uma coluna de um dataframe composta por strings ("df"), quebra-a em "elementos" de acordo com o separador ("delimiter") passado e retorna um dataframe com uma coluna, onde cada linha é um elemento. 
+    :return: Dataframe com uma coluna
+    :rtype: pandas.core.series.Series
+    """    
     set = []
     ignore = ['I', 'i', 'The', 'the', 'And', 'and', 'To', 'to', 'Me', 'me', 'feat', 'Feat',
               'A', 'a', 'It', 'it', 'In', 'in', 'My', 'my', 'Of', 'of', 'That', 'that', 'This', '&',
@@ -45,13 +69,30 @@ def get_elements(df, delimiter):
     return pd.DataFrame(set)[0]
 
 # Retorna as n palavras que mais ocorrem nas entradas (strings) de um dataframe composto por uma coluna
-def count_words(df, n): 
+def count_words(df, n):
+    """Função que retorna as n palavras que mais ocorrem nas entradas (strings) de um dataframe composto por uma coluna.
+
+    :param df: Dataframe
+    :type df: pd.Dataframe
+    :param n: Número de linhas
+    :type n: int
+    :return: Dataframe com o número de palavras
+    :rtype: pd.Dataframe
+    """
     words_df = get_elements(df, " ")
     return words_df.value_counts().head(n)
 
 # Conta quantas vezes uma string ("title" - o titulo da musica ou album) ocorre nas letras ("df["Lyrics"]) e em quantas 
 # musicas ocorre ao menos uma vez
 def count_repetitions(df, title):
+    """Função que conta quantas vezes uma string ("title" - o titulo da musica ou album) ocorre nas letras ("df["Lyrics"]) e em quantas musicas ocorre ao menos uma vez.
+    :param df: Dataframe   
+    :type df: pd.Dataframe
+    :param title: Título das músicas
+    :type title: string
+    :return: Retorna uma Lista
+    :rtype: list
+    """    
     freq = 0
     count = 0
     real_title = " " + remove_useless(title.lower()) + " "
@@ -66,6 +107,11 @@ def count_repetitions(df, title):
 # Recebe uma string e retorna uma nova string onde todas as palavras que continham "(" ou ")" foram removidas
 # Ex.: Red (Deluxe Edition) --> Red 
 def remove_useless(string):
+    """Função que recebe uma string e retorna uma nova string onde todas as palavras que continham "(" ou ")" foram removidas.
+
+    :return: Palavras filtradas
+    :rtype: String
+    """ 
     new_str = ""
     for k in string.split(" "):
         if "(" not in k and ")" not in k:
@@ -75,6 +121,11 @@ def remove_useless(string):
 
 # Recebe uma string, deixa-a toda em letras minusculas e remove um conjunto de caracteres
 def clean_string(string):
+    """Função que recebe uma string, deixa-a toda em letras minusculas e remove um conjunto de caracteres.
+
+    :return: Conjunto de letras
+    :rtype: string
+    """    
     string = string.lower()
     for k in '"!?-.,:;()[]/':
         string = string.replace(k, "")
@@ -85,6 +136,17 @@ def clean_string(string):
 
 # Printa uma tabela com as musicas mais longas e mais curtas de um album especifico
 def length_by_album(df, album, n):
+    """Função que printa uma tabela com as músicas mais longas e mais curtas de cada álbum.
+
+    :param df: Dataframe
+    :type df: pd.Dataframe
+    :param album: Álbum de músicas
+    :type album: string
+    :param n: Número de linhas
+    :type n: int
+    :raises InexistentAlbum: exceção  
+    :raises NonPositiveValue: exceção
+    """
     try:
         if album not in df["Album"].unique():
             raise InexistentAlbum
@@ -104,6 +166,17 @@ def length_by_album(df, album, n):
 
 # Printa uma tabela com as n musicas mais populares e menos populares de um album especifico 
 def streams_by_album(df, album, n):
+    """Função que printa uma tabela com as músicas mais populares e menos populares de cada album.
+
+    :param df: Dataframe
+    :type df: pd.Dataframe
+    :param album: Album de músicas 
+    :type album: String
+    :param n: Número de linhas
+    :type n: int
+    :raises InexistentAlbum: exceção
+    :raises NonPositiveValue: exceção
+    """
     try:
         if album not in df["Album"].unique():
             raise InexistentAlbum
@@ -123,6 +196,14 @@ def streams_by_album(df, album, n):
 
 # Printa uma tabela com as n musicas mais longas e mais curtas dentre toda a discografia
 def length_all(df, n):
+    """Função que printa uma tabela com as músicas mais longas e mais curtas dentre toda a discografia
+
+    :param df: Dataframe
+    :type df: pd.Dataframe
+    :param n: mnúmero de linhas
+    :type n: int
+    :raises NonPositiveValue: exceção
+    """
     try:
         if n <= 0:
             raise NonPositiveValue
@@ -138,6 +219,14 @@ def length_all(df, n):
 
 # Printa uma tabela com as n musicas com mais streams e menos streams dentre toda a discografia
 def streams_all(df, n):
+    """Função que printa uma tabela com as músicas com mais streams e menos streams dentre toda a discografia
+
+    :param df: Dataframe
+    :type df: pd.Dataframe
+    :param n: número de linhas
+    :type n: int
+    :raises NonPositiveValue: exceção
+    """
     try:
         if n <= 0:
             raise NonPositiveValue
@@ -153,6 +242,14 @@ def streams_all(df, n):
 
 # Printa uma tabela com os albuns com mais premios
 def albums_prizes(df, n):
+    """Função que printa uma tabela com os albuns com mais premios.
+
+    :param df: Dataframe
+    :type df: pd.Dataframe
+    :param n: número de linhas
+    :type n: int
+    :raises NonPositiveValue: exceção
+    """
     try:
         if n <= 0:
             raise NonPositiveValue
@@ -166,6 +263,16 @@ def albums_prizes(df, n):
   
 # Printa o Coeficiente de Correlação de Pearlson e define o grau de correlação, dado um dataframe e duas de suas colunas, compostas de valores numéricos
 def correlation_test(df, var1, var2):
+    """Função que printa o coeficiente de correlação de pearlson e define o grau de correlação 
+
+    :param df: Dataframe
+    :type df: pd.Dataframe
+    :param var1: Nome de colunas do Dataframe composta de valores
+    :type var1: Strings
+    :param var2: Nome de colunas do Dataframe composta de valores
+    :type var2: Strings
+    :raises InexistentColumn: exceção
+    """
     try:
         if var1 not in list(df) or var2 not in list(df):
             raise InexistentColumn
@@ -190,6 +297,14 @@ def correlation_test(df, var1, var2):
   
 # Printa as n palavras mais comuns nos titulos dos álbuns
 def words_album(df, n): 
+    """Função que printa as 5 palavras mais comuns nos títulos dos albuns.
+
+    :param df: Dataframe
+    :type df: pd.Dataframe
+    :param n: número de linhas
+    :type n: int
+    :raises NonPositiveValue: exceção
+    """
     try:
         if n <= 0:
             raise NonPositiveValue
@@ -202,6 +317,14 @@ def words_album(df, n):
 
 # Printa as n palavras mais comuns nos titulos das músicas
 def words_title(df, n):
+    """Função que printa as 5 paalvras mais comuns nos títulos das músicas.
+
+    :param df: Dataframe
+    :type df: pd.Dataframe
+    :param n: número de linhas
+    :type n: int
+    :raises NonPositiveValue: exeção
+    """
     try:
         if n <= 0:
             raise NonPositiveValue
@@ -214,6 +337,17 @@ def words_title(df, n):
 
 # Printa, dado certo álbum, as n palavras mais comuns nas letras das musicas
 def words_lyrics_by_album(df, album, n):
+    """Função que printa, para cada álbum, as n palavras mais comuns nas letras das musicas. 
+
+    :param df: Dataframe
+    :type df: pd.Dataframe
+    :param album: Album de músicas
+    :type album: String
+    :param n: número de palavras
+    :type n: int
+    :raises InexistentAlbum: exceção
+    :raises NonPositiveValue: exceção
+    """    
     try:
         if album not in df["Album"].unique():
             raise InexistentAlbum
@@ -232,6 +366,14 @@ def words_lyrics_by_album(df, album, n):
 
 # Printa as n palavras mais comuns nas letras das musicas de toda a discografia
 def words_lyrics_all(df, n):
+    """Função que printa as n palavras mais comuns nas letras das músicas de toda a discografia
+
+    :param df: Dataframe
+    :type df: pd.Dataframe
+    :param n: número de palavras
+    :type n: int
+    :raises NonPositiveValue: exceção
+    """    
     try:
         if n <= 0:
             raise NonPositiveValue
@@ -245,6 +387,14 @@ def words_lyrics_all(df, n):
     
 # Printa, para cada album, quantas vezes o titulo do album ocorre nas letras das musicas e em quantas musicas ele ocorre, e diz se é recorrente ou não.
 def album_title_in_lyrics(df, album):
+    """Função que printa, para cada album, quantas vezes o título do album ocorre nas letras das músicas e em quantas músicas ele ocorre.
+
+    :param df: Dataframe
+    :type df: pd.Dataframe
+    :param album: Album de músicas
+    :type album: String
+    :raises InexistentAlbum: execeção
+    """    
     try:
         if album not in df["Album"].unique():
             raise InexistentAlbum
@@ -263,6 +413,11 @@ def album_title_in_lyrics(df, album):
 
 # Printa o numero médio de vezes que o titulo de uma música ocorre nas letras e a porcentagem de músicas que contém seu título na letra
 def track_title_in_lyrics(df):
+    """Função que printa o numero médio de vezes que o titulo de uma música ocorre nas letras e a porcentagem de músicas que contém seu título na letra.
+
+    :param df: Dataframe
+    :type df: pd.Dataframe
+    """
     try: 
         appearances_list = [count_repetitions(df.loc[df["Title"] == track], track.split(" - ")[0])[0] for track in df["Title"]]
         tracks_with_appearence = sum([1 for x in appearances_list if x != 0])
@@ -278,6 +433,14 @@ def track_title_in_lyrics(df):
 
 # Printa uma tabela com as n musicas mais e menos 'dançáveis' dentre toda a discografia
 def danceability_all(df, n):
+    """Função que printa uma tabela com as n musicas mais e menos 'dançáveis' dentre toda a discografia.
+
+    :param df: Dataframe
+    :type df: pd.Dataframe
+    :param n: Número de músicas
+    :type n: int
+    :raises NonPositiveValue: exceção
+    """    
     try:
         if n <= 0:
             raise NonPositiveValue
@@ -293,6 +456,14 @@ def danceability_all(df, n):
 
 # Printa uma tabela com as n musicas mais e menos 'positivas' dentre toda a discografia
 def valence_all(df, n):
+    """Printa uma tabela com as n musicas mais e menos 'positivas' dentre toda a discografia    
+
+    :param df: Dataframe    
+    :type df: pd.Dataframe
+    :param n: Número de músicas
+    :type n: int
+    :raises NonPositiveValue: exeção
+    """    
     try:
         if n <= 0:
             raise NonPositiveValue
@@ -308,6 +479,17 @@ def valence_all(df, n):
 
 # Printa uma tabela com as n musicas mais e menos 'dançáveis' de um album especifico
 def danceability_by_album(df, album, n):
+    """Printa uma tabela com as n musicas mais e menos 'dançáveis' de um album especifico
+
+    :param df: Dataframe
+    :type df: pd.Dataframe
+    :param album: Album de músicas
+    :type album: String
+    :param n: Número de músicas
+    :type n: int
+    :raises InexistentAlbum: Exceção
+    :raises NonPositiveValue: _description_
+    """    
     try:
         if album not in df["Album"].unique():
             raise InexistentAlbum
@@ -327,6 +509,17 @@ def danceability_by_album(df, album, n):
 
 # Printa uma tabela com as n musicas mais e menos 'positivas' de um album especifico
 def valence_by_album(df, album, n):
+    """Printa uma tabela com as n musicas mais e menos 'positivas' de um album especifico.
+
+    :param df: Datafrmae
+    :type df: pd.Dataframe
+    :param album: Album de músicas
+    :type album: String
+    :param n: Número de músicas
+    :type n: int
+    :raises InexistentAlbum: exceção
+    :raises NonPositiveValue: exceção
+    """    
     try:
         if album not in df["Album"].unique():
             raise InexistentAlbum
