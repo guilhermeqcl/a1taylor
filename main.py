@@ -1,53 +1,65 @@
 import mod
 import pandas as pd
 
-def main():
-    data = open("./data/def.csv", "r", encoding="utf-8")
-    df = pd.read_csv(data, delimiter="$")
-    title_in_lyrics(df)
+# Abertura dos arquivos com o dataset
+main_data = open("./data/def.csv", "r", encoding="utf-8")
+albuns = open("./data/albuns.csv", "r", encoding="utf-8")
 
-def length_by_album(df):
-    for album in df["Album"].unique():
-        select = mod.MinMaxLengthAndPop(df.loc[df["Album"] == album], "Length")
-        print(f"{album} - músicas mais longas:\n", select[0][["Title", "Length"]], "\n")
-        print(f"{album} - músicas mais curtas:\n", select[1][["Title", "Length"]], "\n\n")
+# Leitura dos dados
+df = pd.read_csv(main_data, delimiter="$")
+albums = pd.read_csv(albuns)
 
-def streams_by_album(df):
-    for album in df["Album"].unique():
-        select = mod.MinMaxLengthAndPop(df.loc[df["Album"] == album], "Streams")
-        print(f"{album} - músicas mais ouvidas:\n", select[0][["Title", "Streams"]], "\n")
-        print(f"{album} - músicas menos ouvidas:\n", select[1][["Title", "Streams"]], "\n\n")
+# Execução das funções que respondem as questões propostas
+    ##### PARTE 1 ######
+print("======================== PARTE 1 =========================")
+print("========== Questão 1 =========")
+#for album in df["Album"].unique():
+#    mod.length_by_album(df, album, 10)
+print("========== Questão 2 =========")
+for album in df["Album"].unique():
+    mod.streams_by_album(df, album, 2000)
+print("========== Questão 3 =========")
+mod.length_all(df, 10)
+print("========== Questão 4 =========")
+mod.streams_all(df, 10)
+print("========== Questão 5 =========")
+mod.albums_prizes(albums, 10)
+print("========== Questão 6 =========")
+mod.correlation_test(df, "Length", "Popularity")
 
-def length_all(df):
-    select = mod.MinMaxLengthAndPop(df, "Length")
-    print("Músicas mais longas:\n", select[0][["Title", "Album", "Length"]], "\n")
-    print("Músicas mais curtas:\n", select[1][["Title", "Album", "Length"]], "\n\n")
 
-def streams_all(df):
-    select = mod.MinMaxLengthAndPop(df, "Streams")
-    print("Músicas mais ouvidas:\n", select[0][["Title", "Album", "Streams"]], "\n")
-    print("Músicas menos ouvidas:\n", select[1][["Title", "Album", "Streams"]], "\n\n")
+    ##### PARTE 2 #####
+print("======================== PARTE 2 =========================")
+print("========== Questão 1 =========")    
+mod.words_album(df, 10)
+print("========== Questão 2=========")
+mod.words_title(df, 10)
+print("========== Questão 3 =========")
+for album in df["Album"].unique():
+    mod.words_lyrics_by_album(df, album, 10)
+print("========== Questão 4 =========")
+mod.words_lyrics_all(df, 10)
+print("========== Questão 5 =========")
+for album in df["Album"].unique():
+    mod.album_title_in_lyrics(df, album)
+print("========== Questão 6 =========")
+mod.track_title_in_lyrics(df)
 
-def words_album(df):
-    print("Palavras mais comuns nos titulos dos álbuns: ", mod.count_words(df["Album"].unique()))
+    ##### PARTE 3 #####
+print("======================== PARTE 3 =========================")
+print("========== Questão 1 =========")
+mod.danceability_all(df, 10)
+print("========== Questão 2 =========")
+for album in df["Album"].unique():
+    mod.danceability_by_album(df, album, 10)
+print("========== Questão 3 =========")
+mod.valence_all(df, 10)
+print("========== Questão 4 =========")
+for album in df["Album"].unique():
+    mod.valence_by_album(df, album, 10)
+print("========== Questão 5 =========")
+mod.correlation_test(df, "Valence", "Danceability")
 
-def words_title(df):
-    print("Palavras mais comuns nos titulos das músicas: ", mod.count_words(df["Title"]))
-
-def words_lyrics_by_album(df):
-    for album in df["Album"].unique():
-        lyrics = mod.get_elements(df.loc[df["Album"] == album]["Lyrics"], " // ")
-        print(f"{album} - palavras mais comuns")
-        print(mod.count_words(lyrics), "\n")
-
-def words_lyrics_all(df):
-    lyrics = mod.get_elements(df["Lyrics"], " // ")
-    print("Toda a discografia - palavras mais comuns")
-    print(mod.count_words(lyrics), "\n")
-
-def title_in_lyrics(df):
-    for word in mod.get_elements(df["Title"], " "):
-        if word not in ["Edition", "Deluxe", "Platinum", "Feat"]:
-            pass
-            
-main()
+# Fechamento dos arquivos
+main_data.close()
+albuns.close()
