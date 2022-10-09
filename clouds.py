@@ -16,18 +16,18 @@ stopwords.update(['I', 'i', 'The', 'the', 'And', 'and', 'To', 'to', 'Me', 'me', 
 wc_titles = WordCloud(background_color='white', stopwords=stopwords).generate(' '.join(df['Title']))
 plt.imshow(wc_titles)
 plt.axis("off")
-plt.show()
+plt.savefig("./images/wordclouds/titles_cloud.png", dpi=600)
 
 #NUVEM DAS LETRAS DAS MÚSICAS POR ÁLBUM
 for album in df['Album'].unique():
-    letras_album = df.loc[df["Album"] == album]
-    wc_albums = WordCloud(background_color='white', stopwords=stopwords, ).generate(' '.join(letras_album['Lyrics']))
-    plt.imshow(wc_albums)
+    lyrics_album = df.loc[df["Album"] == album]
+    wc_lyrics_albums = WordCloud(background_color='white', stopwords=stopwords, ).generate(' '.join(lyrics_album['Lyrics']))
+    plt.imshow(wc_lyrics_albums)
     plt.axis("off")
-    plt.show()
+    plt.savefig((f"./images/wordclouds/{album}_cloud.png"), dpi=600)
 
 #NUVEM DAS LETRAS DAS MÚSICAS
 wc_lyrics = WordCloud(background_color='white', stopwords=stopwords).generate(' '.join(df['Lyrics']))
 plt.imshow(wc_lyrics)
 plt.axis("off")
-plt.show()
+plt.savefig("./images/wordclouds/lyrics_cloud.png", dpi=600)
