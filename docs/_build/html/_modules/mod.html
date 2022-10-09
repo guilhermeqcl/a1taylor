@@ -1,0 +1,639 @@
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mod &#8212; documentação A1Taylor </title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Buscar" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Código fonte para mod</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="InexistentAlbum"><a class="viewcode-back" href="../index.html#mod.InexistentAlbum">[documentos]</a><span class="k">class</span> <span class="nc">InexistentAlbum</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when the input &#39;album&#39; argument is not an album in dataset&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="InexistentColumn"><a class="viewcode-back" href="../index.html#mod.InexistentColumn">[documentos]</a><span class="k">class</span> <span class="nc">InexistentColumn</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when a input argument is not an column in the dataset&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="NonPositiveValue"><a class="viewcode-back" href="../index.html#mod.NonPositiveValue">[documentos]</a><span class="k">class</span> <span class="nc">NonPositiveValue</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when the input value is not a positive integer&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+<span class="c1">########################################### FUNÇÕES INTERNAS ##################################################</span>
+
+<span class="c1"># Retorna as n linhas do dataframe com os maiores valores (ordenados do maior para o menor) do parâmetro passado</span>
+<div class="viewcode-block" id="get_bottom"><a class="viewcode-back" href="../index.html#mod.get_bottom">[documentos]</a><span class="k">def</span> <span class="nf">get_bottom</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Retorna as n linhas do dataframe com os maiores valores (ordenados do maior para o menor) do parâmetro passado</span>
+<span class="sd">    :param df: Dataframe</span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    :param parameter: Nome da coluna do Dataframe</span>
+<span class="sd">    :type parameter: string</span>
+<span class="sd">    :param n: Número de linhas retornado</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :return: Dataframe ordenado</span>
+<span class="sd">    :rtype: pd.Dataframe</span>
+<span class="sd">    &quot;&quot;&quot;</span>  
+    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">parameter</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></div>
+
+<span class="c1"># Retorna as n linhas do dataframe com os menores valores (ordenados do menor para o maior) do parâmetro passado</span>
+<div class="viewcode-block" id="get_top"><a class="viewcode-back" href="../index.html#mod.get_top">[documentos]</a><span class="k">def</span> <span class="nf">get_top</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Função que retorna as n linhas do dataframe com os menores valores (ordenados do menor para o maior) do parâmetro passado.</span>
+<span class="sd">    :param df: Dataframe</span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    :param parameter: Nome da coluna do Dataframe</span>
+<span class="sd">    :type parameter: string</span>
+<span class="sd">    :param n: Número de linhas retornado</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :return: Dataframe ordenado</span>
+<span class="sd">    :rtype: pd.Dataframe</span>
+<span class="sd">    &quot;&quot;&quot;</span> 
+    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">parameter</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></div>
+
+<span class="c1"># Recebe uma coluna de um dataframe composta por strings (&quot;df&quot;), quebra-a em &quot;elementos&quot; de acordo com o separador (&quot;delimiter&quot;)</span>
+<span class="c1"># passado e retorna um dataframe com uma coluna, onde cada linha é um elemento </span>
+<div class="viewcode-block" id="get_elements"><a class="viewcode-back" href="../index.html#mod.get_elements">[documentos]</a><span class="k">def</span> <span class="nf">get_elements</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Função que recebe uma coluna de um dataframe composta por strings (&quot;df&quot;), quebra-a em &quot;elementos&quot; de acordo com o separador (&quot;delimiter&quot;) passado e retorna um dataframe com uma coluna, onde cada linha é um elemento. </span>
+<span class="sd">    :return: Dataframe com uma coluna</span>
+<span class="sd">    :rtype: pandas.core.series.Series</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+    <span class="nb">set</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;The&#39;</span><span class="p">,</span> <span class="s1">&#39;the&#39;</span><span class="p">,</span> <span class="s1">&#39;And&#39;</span><span class="p">,</span> <span class="s1">&#39;and&#39;</span><span class="p">,</span> <span class="s1">&#39;To&#39;</span><span class="p">,</span> <span class="s1">&#39;to&#39;</span><span class="p">,</span> <span class="s1">&#39;Me&#39;</span><span class="p">,</span> <span class="s1">&#39;me&#39;</span><span class="p">,</span> <span class="s1">&#39;feat&#39;</span><span class="p">,</span> <span class="s1">&#39;Feat&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;It&#39;</span><span class="p">,</span> <span class="s1">&#39;it&#39;</span><span class="p">,</span> <span class="s1">&#39;In&#39;</span><span class="p">,</span> <span class="s1">&#39;in&#39;</span><span class="p">,</span> <span class="s1">&#39;My&#39;</span><span class="p">,</span> <span class="s1">&#39;my&#39;</span><span class="p">,</span> <span class="s1">&#39;Of&#39;</span><span class="p">,</span> <span class="s1">&#39;of&#39;</span><span class="p">,</span> <span class="s1">&#39;That&#39;</span><span class="p">,</span> <span class="s1">&#39;that&#39;</span><span class="p">,</span> <span class="s1">&#39;This&#39;</span><span class="p">,</span> <span class="s1">&#39;&amp;&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;this&#39;</span><span class="p">,</span><span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="s2">&quot;I&#39;m&quot;</span><span class="p">,</span> <span class="s2">&quot;i&#39;m&quot;</span><span class="p">,</span> <span class="s1">&#39;But&#39;</span><span class="p">,</span> <span class="s1">&#39;but&#39;</span><span class="p">,</span> <span class="s1">&#39;On&#39;</span><span class="p">,</span> <span class="s1">&#39;on&#39;</span><span class="p">,</span> <span class="s1">&#39;Be&#39;</span><span class="p">,</span> <span class="s1">&#39;be&#39;</span><span class="p">,</span> <span class="s1">&#39;Is&#39;</span><span class="p">,</span> <span class="s1">&#39;is&#39;</span><span class="p">,</span> <span class="s1">&#39;demo&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;So&#39;</span><span class="p">,</span> <span class="s1">&#39;so&#39;</span><span class="p">,</span><span class="s1">&#39;Oh&#39;</span><span class="p">,</span> <span class="s1">&#39;oh&#39;</span><span class="p">,</span> <span class="s1">&#39;Was&#39;</span><span class="p">,</span> <span class="s1">&#39;was&#39;</span><span class="p">,</span> <span class="s2">&quot;It&#39;s&quot;</span><span class="p">,</span> <span class="s2">&quot;it&#39;s&quot;</span><span class="p">,</span> <span class="s1">&#39;When&#39;</span><span class="p">,</span> <span class="s1">&#39;when&#39;</span><span class="p">,</span> <span class="s1">&#39;Just&#39;</span><span class="p">,</span> <span class="s1">&#39;just&#39;</span><span class="p">,</span> <span class="s1">&#39;Demo&#39;</span><span class="p">,</span>
+              <span class="s2">&quot;You&#39;re&quot;</span><span class="p">,</span> <span class="s2">&quot;you&#39;re&quot;</span><span class="p">,</span> <span class="s1">&#39;For&#39;</span><span class="p">,</span> <span class="s1">&#39;for&#39;</span><span class="p">,</span> <span class="s1">&#39;With&#39;</span><span class="p">,</span> <span class="s1">&#39;with&#39;</span><span class="p">,</span> <span class="s1">&#39;What&#39;</span><span class="p">,</span> <span class="s1">&#39;what&#39;</span><span class="p">,</span> <span class="s2">&quot;Don&#39;t&quot;</span><span class="p">,</span> <span class="s2">&quot;don&#39;t&quot;</span><span class="p">,</span> <span class="s1">&#39;Up&#39;</span><span class="p">,</span> 
+              <span class="s1">&#39;up&#39;</span><span class="p">,</span> <span class="s1">&#39;Back&#39;</span><span class="p">,</span> <span class="s1">&#39;back&#39;</span><span class="p">,</span> <span class="s1">&#39;If&#39;</span><span class="p">,</span> <span class="s1">&#39;if&#39;</span><span class="p">,</span> <span class="s1">&#39;Out&#39;</span><span class="p">,</span> <span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="s2">&quot;&#39;Cause&quot;</span><span class="p">,</span><span class="s2">&quot;&#39;cause&quot;</span><span class="p">,</span> <span class="s1">&#39;At&#39;</span><span class="p">,</span> <span class="s1">&#39;at&#39;</span><span class="p">,</span> <span class="s1">&#39;Are&#39;</span><span class="p">,</span> <span class="s1">&#39;are&#39;</span><span class="p">,</span> 
+              <span class="s1">&#39;Deluxe&#39;</span><span class="p">,</span> <span class="s1">&#39;Edition&#39;</span><span class="p">,</span> <span class="s1">&#39;Platinum&#39;</span><span class="p">,</span> <span class="s1">&#39;Di&#39;</span><span class="p">,</span> <span class="s1">&#39;di&#39;</span><span class="p">,</span> <span class="s1">&#39;Edition&#39;</span><span class="p">,</span> <span class="s1">&#39;edition&#39;</span><span class="p">,</span> <span class="s1">&#39;deluxe&#39;</span><span class="p">,</span> <span class="s1">&#39;Deluxe&#39;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">):</span>
+            <span class="c1"># Remove caracteres indesejados da string</span>
+            <span class="n">element</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;[],.;!&quot;?()- &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">element</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">element</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">:</span>
+                <span class="nb">set</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">set</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<span class="c1"># Retorna as n palavras que mais ocorrem nas entradas (strings) de um dataframe composto por uma coluna</span>
+<div class="viewcode-block" id="count_words"><a class="viewcode-back" href="../index.html#mod.count_words">[documentos]</a><span class="k">def</span> <span class="nf">count_words</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Função que retorna as n palavras que mais ocorrem nas entradas (strings) de um dataframe composto por uma coluna.</span>
+
+<span class="sd">    :param df: Dataframe</span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    :param n: Número de linhas</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :return: Dataframe com o número de palavras</span>
+<span class="sd">    :rtype: pd.Dataframe</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">words_df</span> <span class="o">=</span> <span class="n">get_elements</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">words_df</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></div>
+
+<span class="c1"># Conta quantas vezes uma string (&quot;title&quot; - o titulo da musica ou album) ocorre nas letras (&quot;df[&quot;Lyrics&quot;]) e em quantas </span>
+<span class="c1"># musicas ocorre ao menos uma vez</span>
+<div class="viewcode-block" id="count_repetitions"><a class="viewcode-back" href="../index.html#mod.count_repetitions">[documentos]</a><span class="k">def</span> <span class="nf">count_repetitions</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Função que conta quantas vezes uma string (&quot;title&quot; - o titulo da musica ou album) ocorre nas letras (&quot;df[&quot;Lyrics&quot;]) e em quantas musicas ocorre ao menos uma vez.</span>
+<span class="sd">    :param df: Dataframe   </span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    :param title: Título das músicas</span>
+<span class="sd">    :type title: string</span>
+<span class="sd">    :return: Retorna uma Lista</span>
+<span class="sd">    :rtype: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+    <span class="n">freq</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">real_title</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">remove_useless</span><span class="p">(</span><span class="n">title</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+    <span class="k">for</span> <span class="n">track_lyrics</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Lyrics&quot;</span><span class="p">]:</span>
+        <span class="n">low</span> <span class="o">=</span> <span class="n">clean_string</span><span class="p">(</span><span class="n">track_lyrics</span><span class="p">)</span>
+        <span class="n">freq</span> <span class="o">+=</span> <span class="n">low</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">real_title</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">real_title</span> <span class="ow">in</span> <span class="n">low</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+            
+    <span class="k">return</span> <span class="p">[</span><span class="n">freq</span><span class="p">,</span> <span class="n">count</span><span class="p">]</span></div>
+
+<span class="c1"># Recebe uma string e retorna uma nova string onde todas as palavras que continham &quot;(&quot; ou &quot;)&quot; foram removidas</span>
+<span class="c1"># Ex.: Red (Deluxe Edition) --&gt; Red </span>
+<div class="viewcode-block" id="remove_useless"><a class="viewcode-back" href="../index.html#mod.remove_useless">[documentos]</a><span class="k">def</span> <span class="nf">remove_useless</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Função que recebe uma string e retorna uma nova string onde todas as palavras que continham &quot;(&quot; ou &quot;)&quot; foram removidas.</span>
+
+<span class="sd">    :return: Palavras filtradas</span>
+<span class="sd">    :rtype: String</span>
+<span class="sd">    &quot;&quot;&quot;</span> 
+    <span class="n">new_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;(&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">k</span> <span class="ow">and</span> <span class="s2">&quot;)&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">k</span><span class="p">:</span>
+            <span class="n">new_str</span> <span class="o">+=</span> <span class="n">k</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+
+    <span class="k">return</span> <span class="n">new_str</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span></div>
+
+<span class="c1"># Recebe uma string, deixa-a toda em letras minusculas e remove um conjunto de caracteres</span>
+<div class="viewcode-block" id="clean_string"><a class="viewcode-back" href="../index.html#mod.clean_string">[documentos]</a><span class="k">def</span> <span class="nf">clean_string</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Função que recebe uma string, deixa-a toda em letras minusculas e remove um conjunto de caracteres.</span>
+
+<span class="sd">    :return: Conjunto de letras</span>
+<span class="sd">    :rtype: string</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+    <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="s1">&#39;&quot;!?-.,:;()[]/&#39;</span><span class="p">:</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">string</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+    <span class="k">return</span> <span class="n">string</span></div>
+
+<span class="c1">######################################## FUNÇÕES PARA RESPONDER AS QUESTÕES #########################################</span>
+
+<span class="c1"># Printa uma tabela com as musicas mais longas e mais curtas de um album especifico</span>
+<div class="viewcode-block" id="length_by_album"><a class="viewcode-back" href="../index.html#mod.length_by_album">[documentos]</a><span class="k">def</span> <span class="nf">length_by_album</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">album</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Função que printa uma tabela com as músicas mais longas e mais curtas de cada álbum.</span>
+
+<span class="sd">    :param df: Dataframe</span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    :param album: Álbum de músicas</span>
+<span class="sd">    :type album: string</span>
+<span class="sd">    :param n: Número de linhas</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :raises InexistentAlbum: exceção  </span>
+<span class="sd">    :raises NonPositiveValue: exceção</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">album</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Album&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">InexistentAlbum</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NonPositiveValue</span>
+
+        <span class="n">top</span> <span class="o">=</span> <span class="n">get_top</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Album&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">album</span><span class="p">],</span> <span class="s2">&quot;Length&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="n">get_bottom</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Album&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">album</span><span class="p">],</span> <span class="s2">&quot;Length&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">album</span><span class="si">}</span><span class="s2"> - músicas mais longas:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">top</span><span class="p">[[</span><span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="s2">&quot;Length&quot;</span><span class="p">]],</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">album</span><span class="si">}</span><span class="s2"> - músicas mais curtas:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">bottom</span><span class="p">[[</span><span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="s2">&quot;Length&quot;</span><span class="p">]],</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">InexistentAlbum</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: album inexistente&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">NonPositiveValue</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: inteiro passado não é positivo&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: dataframe passado não é o correto&quot;</span><span class="p">)</span></div>
+
+<span class="c1"># Printa uma tabela com as n musicas mais populares e menos populares de um album especifico </span>
+<div class="viewcode-block" id="streams_by_album"><a class="viewcode-back" href="../index.html#mod.streams_by_album">[documentos]</a><span class="k">def</span> <span class="nf">streams_by_album</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">album</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Função que printa uma tabela com as músicas mais populares e menos populares de cada album.</span>
+
+<span class="sd">    :param df: Dataframe</span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    :param album: Album de músicas </span>
+<span class="sd">    :type album: String</span>
+<span class="sd">    :param n: Número de linhas</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :raises InexistentAlbum: exceção</span>
+<span class="sd">    :raises NonPositiveValue: exceção</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">album</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Album&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">InexistentAlbum</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NonPositiveValue</span>
+
+        <span class="n">top</span> <span class="o">=</span> <span class="n">get_top</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Album&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">album</span><span class="p">],</span> <span class="s2">&quot;Streams&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="n">get_bottom</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Album&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">album</span><span class="p">],</span> <span class="s2">&quot;Streams&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">album</span><span class="si">}</span><span class="s2"> - músicas mais ouvidas:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">top</span><span class="p">[[</span><span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="s2">&quot;Streams&quot;</span><span class="p">]],</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">album</span><span class="si">}</span><span class="s2"> - músicas menos ouvidas:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">bottom</span><span class="p">[[</span><span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="s2">&quot;Streams&quot;</span><span class="p">]],</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">InexistentAlbum</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: album inexistente&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">NonPositiveValue</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: inteiro passado não é positivo&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: dataframe passado não é o correto&quot;</span><span class="p">)</span></div>
+
+<span class="c1"># Printa uma tabela com as n musicas mais longas e mais curtas dentre toda a discografia</span>
+<div class="viewcode-block" id="length_all"><a class="viewcode-back" href="../index.html#mod.length_all">[documentos]</a><span class="k">def</span> <span class="nf">length_all</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Função que printa uma tabela com as músicas mais longas e mais curtas dentre toda a discografia</span>
+
+<span class="sd">    :param df: Dataframe</span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    :param n: mnúmero de linhas</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :raises NonPositiveValue: exceção</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NonPositiveValue</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">get_top</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;Length&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="n">get_bottom</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;Length&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Músicas mais longas:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">top</span><span class="p">[[</span><span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="s2">&quot;Album&quot;</span><span class="p">,</span> <span class="s2">&quot;Length&quot;</span><span class="p">]],</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Músicas mais curtas:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">bottom</span><span class="p">[[</span><span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="s2">&quot;Album&quot;</span><span class="p">,</span> <span class="s2">&quot;Length&quot;</span><span class="p">]],</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="n">NonPositiveValue</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: inteiro passado não é positivo&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: dataframe passado não é o correto&quot;</span><span class="p">)</span></div>
+
+<span class="c1"># Printa uma tabela com as n musicas com mais streams e menos streams dentre toda a discografia</span>
+<div class="viewcode-block" id="streams_all"><a class="viewcode-back" href="../index.html#mod.streams_all">[documentos]</a><span class="k">def</span> <span class="nf">streams_all</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Função que printa uma tabela com as músicas com mais streams e menos streams dentre toda a discografia</span>
+
+<span class="sd">    :param df: Dataframe</span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    :param n: número de linhas</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :raises NonPositiveValue: exceção</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NonPositiveValue</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">get_top</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;Streams&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="n">get_bottom</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;Streams&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Músicas mais ouvidas:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">top</span><span class="p">[[</span><span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="s2">&quot;Album&quot;</span><span class="p">,</span> <span class="s2">&quot;Streams&quot;</span><span class="p">]],</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Músicas menos ouvidas:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">bottom</span><span class="p">[[</span><span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="s2">&quot;Album&quot;</span><span class="p">,</span> <span class="s2">&quot;Streams&quot;</span><span class="p">]],</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="n">NonPositiveValue</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: inteiro passado não é positivo&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: dataframe passado não é o correto&quot;</span><span class="p">)</span></div>
+
+<span class="c1"># Printa uma tabela com os albuns com mais premios</span>
+<div class="viewcode-block" id="albums_prizes"><a class="viewcode-back" href="../index.html#mod.albums_prizes">[documentos]</a><span class="k">def</span> <span class="nf">albums_prizes</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Função que printa uma tabela com os albuns com mais premios.</span>
+
+<span class="sd">    :param df: Dataframe</span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    :param n: número de linhas</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :raises NonPositiveValue: exceção</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NonPositiveValue</span>
+        <span class="n">col_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Grammy&quot;</span><span class="p">,</span> <span class="s2">&quot;American Music Awards&quot;</span><span class="p">,</span> <span class="s2">&quot;Billboard Music Awards&quot;</span><span class="p">,</span> <span class="s2">&quot;MTV Video Music Awards&quot;</span><span class="p">,</span> <span class="s2">&quot;World Music Awards&quot;</span><span class="p">,</span> <span class="s2">&quot;Brit Awards&quot;</span><span class="p">]</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Total Prizes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col_list</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Albuns mais premiados:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">get_top</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;Total Prizes&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)[[</span><span class="s2">&quot;Album&quot;</span><span class="p">,</span> <span class="s2">&quot;Total Prizes&quot;</span><span class="p">,</span> <span class="s2">&quot;Grammy&quot;</span><span class="p">,</span> <span class="s2">&quot;American Music Awards&quot;</span><span class="p">,</span> <span class="s2">&quot;Billboard Music Awards&quot;</span><span class="p">,</span> <span class="s2">&quot;MTV Video Music Awards&quot;</span><span class="p">,</span> <span class="s2">&quot;World Music Awards&quot;</span><span class="p">,</span> <span class="s2">&quot;Brit Awards&quot;</span><span class="p">]])</span>
+    <span class="k">except</span> <span class="n">NonPositiveValue</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: inteiro passado não é positivo&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: dataframe passado não é o correto&quot;</span><span class="p">)</span></div>
+  
+<span class="c1"># Printa o Coeficiente de Correlação de Pearlson e define o grau de correlação, dado um dataframe e duas de suas colunas, compostas de valores numéricos</span>
+<div class="viewcode-block" id="correlation_test"><a class="viewcode-back" href="../index.html#mod.correlation_test">[documentos]</a><span class="k">def</span> <span class="nf">correlation_test</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">var1</span><span class="p">,</span> <span class="n">var2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Função que printa o coeficiente de correlação de pearlson e define o grau de correlação </span>
+
+<span class="sd">    :param df: Dataframe</span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    :param var1: Nome de colunas do Dataframe composta de valores</span>
+<span class="sd">    :type var1: Strings</span>
+<span class="sd">    :param var2: Nome de colunas do Dataframe composta de valores</span>
+<span class="sd">    :type var2: Strings</span>
+<span class="sd">    :raises InexistentColumn: exceção</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">var1</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="ow">or</span> <span class="n">var2</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InexistentColumn</span>
+        <span class="n">correlation_coef</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">var1</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">df</span><span class="p">[</span><span class="n">var2</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">())[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Coeficiente de correlação de Pearlson (</span><span class="si">{</span><span class="n">var1</span><span class="si">}</span><span class="s2"> e </span><span class="si">{</span><span class="n">var2</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">correlation_coef</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">modl</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">correlation_coef</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">modl</span> <span class="o">&lt;</span> <span class="mf">0.3</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Correlação desprezível</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">modl</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Correlação fraca</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">modl</span> <span class="o">&lt;</span> <span class="mf">0.7</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Correlação média</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">modl</span> <span class="o">&lt;</span> <span class="mf">0.9</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Correlação forte</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Correlação muito forte</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="n">InexistentColumn</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: coluna passada não existe no dataframe passado&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: coluna passada não é composta estritamente de valores numéricos&quot;</span><span class="p">)</span></div>
+  
+<span class="c1"># Printa as n palavras mais comuns nos titulos dos álbuns</span>
+<div class="viewcode-block" id="words_album"><a class="viewcode-back" href="../index.html#mod.words_album">[documentos]</a><span class="k">def</span> <span class="nf">words_album</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span> 
+    <span class="sd">&quot;&quot;&quot;Função que printa as 5 palavras mais comuns nos títulos dos albuns.</span>
+
+<span class="sd">    :param df: Dataframe</span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    :param n: número de linhas</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :raises NonPositiveValue: exceção</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NonPositiveValue</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Palavras mais comuns nos titulos dos álbuns:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">count_words</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Album&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span> <span class="n">n</span><span class="p">))</span>
+    <span class="k">except</span> <span class="n">NonPositiveValue</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: inteiro passado não é positivo&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: dataframe passado não é o correto&quot;</span><span class="p">)</span></div>
+
+<span class="c1"># Printa as n palavras mais comuns nos titulos das músicas</span>
+<div class="viewcode-block" id="words_title"><a class="viewcode-back" href="../index.html#mod.words_title">[documentos]</a><span class="k">def</span> <span class="nf">words_title</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Função que printa as 5 paalvras mais comuns nos títulos das músicas.</span>
+
+<span class="sd">    :param df: Dataframe</span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    :param n: número de linhas</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :raises NonPositiveValue: exeção</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NonPositiveValue</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Palavras mais comuns nos titulos das músicas:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">count_words</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Title&quot;</span><span class="p">],</span> <span class="n">n</span><span class="p">))</span>
+    <span class="k">except</span> <span class="n">NonPositiveValue</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: inteiro passado não é positivo&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: dataframe passado não é o correto&quot;</span><span class="p">)</span></div>
+
+<span class="c1"># Printa, dado certo álbum, as n palavras mais comuns nas letras das musicas</span>
+<div class="viewcode-block" id="words_lyrics_by_album"><a class="viewcode-back" href="../index.html#mod.words_lyrics_by_album">[documentos]</a><span class="k">def</span> <span class="nf">words_lyrics_by_album</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">album</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Função que printa, para cada álbum, as n palavras mais comuns nas letras das musicas. </span>
+
+<span class="sd">    :param df: Dataframe</span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    :param album: Album de músicas</span>
+<span class="sd">    :type album: String</span>
+<span class="sd">    :param n: número de palavras</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :raises InexistentAlbum: exceção</span>
+<span class="sd">    :raises NonPositiveValue: exceção</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">album</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Album&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">InexistentAlbum</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NonPositiveValue</span>
+        <span class="n">lyrics</span> <span class="o">=</span> <span class="n">get_elements</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Album&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">album</span><span class="p">][</span><span class="s2">&quot;Lyrics&quot;</span><span class="p">],</span> <span class="s2">&quot; // &quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">album</span><span class="si">}</span><span class="s2"> - palavras mais comuns&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">count_words</span><span class="p">(</span><span class="n">lyrics</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="n">NonPositiveValue</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: inteiro passado não é positivo&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: dataframe passado não é o correto&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">InexistentAlbum</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: album inexistente&quot;</span><span class="p">)</span></div>
+
+<span class="c1"># Printa as n palavras mais comuns nas letras das musicas de toda a discografia</span>
+<div class="viewcode-block" id="words_lyrics_all"><a class="viewcode-back" href="../index.html#mod.words_lyrics_all">[documentos]</a><span class="k">def</span> <span class="nf">words_lyrics_all</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Função que printa as n palavras mais comuns nas letras das músicas de toda a discografia</span>
+
+<span class="sd">    :param df: Dataframe</span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    :param n: número de palavras</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :raises NonPositiveValue: exceção</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NonPositiveValue</span>
+        <span class="n">lyrics</span> <span class="o">=</span> <span class="n">get_elements</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Lyrics&quot;</span><span class="p">],</span> <span class="s2">&quot; // &quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Toda a discografia - palavras mais comuns&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">count_words</span><span class="p">(</span><span class="n">lyrics</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">NonPositiveValue</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: inteiro passado não é positivo&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: dataframe passado não é o correto&quot;</span><span class="p">)</span></div>
+    
+<span class="c1"># Printa, para cada album, quantas vezes o titulo do album ocorre nas letras das musicas e em quantas musicas ele ocorre, e diz se é recorrente ou não.</span>
+<div class="viewcode-block" id="album_title_in_lyrics"><a class="viewcode-back" href="../index.html#mod.album_title_in_lyrics">[documentos]</a><span class="k">def</span> <span class="nf">album_title_in_lyrics</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">album</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Função que printa, para cada album, quantas vezes o título do album ocorre nas letras das músicas e em quantas músicas ele ocorre.</span>
+
+<span class="sd">    :param df: Dataframe</span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    :param album: Album de músicas</span>
+<span class="sd">    :type album: String</span>
+<span class="sd">    :raises InexistentAlbum: execeção</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">album</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Album&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">InexistentAlbum</span>
+        <span class="n">album_tracks</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Album&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">album</span><span class="p">]</span>
+        <span class="n">tracks_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">album_tracks</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">count_repetitions</span><span class="p">(</span><span class="n">album_tracks</span><span class="p">,</span> <span class="n">album</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">album</span><span class="si">}</span><span class="s2">: </span><span class="se">\n</span><span class="s2">Numero total de vezes que o titulo ocorre nas letras: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">Quantidade de músicas que contem o titulo do álbum: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> de </span><span class="si">{</span><span class="n">tracks_number</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">tracks_number</span><span class="o">*</span><span class="mi">5</span> <span class="ow">and</span> <span class="n">info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">tracks_number</span><span class="o">/</span><span class="mi">2</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Titulo do album recorrente nas letras</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Titulo do album NÃO recorrente nas letras</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">InexistentAlbum</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: album inexistente&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: dataframe passado não é o correto&quot;</span><span class="p">)</span></div>
+
+<span class="c1"># Printa o numero médio de vezes que o titulo de uma música ocorre nas letras e a porcentagem de músicas que contém seu título na letra</span>
+<div class="viewcode-block" id="track_title_in_lyrics"><a class="viewcode-back" href="../index.html#mod.track_title_in_lyrics">[documentos]</a><span class="k">def</span> <span class="nf">track_title_in_lyrics</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Função que printa o numero médio de vezes que o titulo de uma música ocorre nas letras e a porcentagem de músicas que contém seu título na letra.</span>
+
+<span class="sd">    :param df: Dataframe</span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">appearances_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">count_repetitions</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Title&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">track</span><span class="p">],</span> <span class="n">track</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; - &quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">track</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Title&quot;</span><span class="p">]]</span>
+        <span class="n">tracks_with_appearence</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">appearances_list</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Número médio de vezes que o titulo de uma música ocorre nas letras:&quot;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">appearances_list</span><span class="p">)</span><span class="o">/</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Title&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Porcentagem de músicas que contém o título na letra:&quot;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="mi">100</span><span class="o">*</span><span class="n">tracks_with_appearence</span><span class="o">/</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Title&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">appearances_list</span><span class="p">)</span><span class="o">/</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Title&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">5</span> <span class="ow">and</span> <span class="mi">100</span><span class="o">*</span><span class="n">tracks_with_appearence</span><span class="o">/</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Title&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;O titulo das músicas é recorrente nas letras</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;O titulo das musicas não é recorrente nas letras</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: dataframe passado não é o correto&quot;</span><span class="p">)</span></div>
+
+<span class="c1"># Printa uma tabela com as n musicas mais e menos &#39;dançáveis&#39; dentre toda a discografia</span>
+<div class="viewcode-block" id="danceability_all"><a class="viewcode-back" href="../index.html#mod.danceability_all">[documentos]</a><span class="k">def</span> <span class="nf">danceability_all</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Função que printa uma tabela com as n musicas mais e menos &#39;dançáveis&#39; dentre toda a discografia.</span>
+
+<span class="sd">    :param df: Dataframe</span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    :param n: Número de músicas</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :raises NonPositiveValue: exceção</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NonPositiveValue</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">get_top</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;Danceability&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="n">get_bottom</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;Danceability&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Músicas mais &#39;dançáveis&#39;:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">top</span><span class="p">[[</span><span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="s2">&quot;Album&quot;</span><span class="p">,</span> <span class="s2">&quot;Danceability&quot;</span><span class="p">]],</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Músicas menos &#39;dançáveis&#39;:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">bottom</span><span class="p">[[</span><span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="s2">&quot;Album&quot;</span><span class="p">,</span> <span class="s2">&quot;Danceability&quot;</span><span class="p">]],</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="n">NonPositiveValue</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: inteiro passado não é positivo&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: dataframe passado não é o correto&quot;</span><span class="p">)</span></div>
+
+<span class="c1"># Printa uma tabela com as n musicas mais e menos &#39;positivas&#39; dentre toda a discografia</span>
+<div class="viewcode-block" id="valence_all"><a class="viewcode-back" href="../index.html#mod.valence_all">[documentos]</a><span class="k">def</span> <span class="nf">valence_all</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Printa uma tabela com as n musicas mais e menos &#39;positivas&#39; dentre toda a discografia    </span>
+
+<span class="sd">    :param df: Dataframe    </span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    :param n: Número de músicas</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :raises NonPositiveValue: exeção</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NonPositiveValue</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">get_top</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;Valence&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="n">get_bottom</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;Valence&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Músicas mais &#39;positivas&#39;:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">top</span><span class="p">[[</span><span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="s2">&quot;Album&quot;</span><span class="p">,</span> <span class="s2">&quot;Valence&quot;</span><span class="p">]],</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Músicas menos &#39;positivas&#39;:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">bottom</span><span class="p">[[</span><span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="s2">&quot;Album&quot;</span><span class="p">,</span> <span class="s2">&quot;Valence&quot;</span><span class="p">]],</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="n">NonPositiveValue</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: inteiro passado não é positivo&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: dataframe passado não é o correto&quot;</span><span class="p">)</span></div>
+
+<span class="c1"># Printa uma tabela com as n musicas mais e menos &#39;dançáveis&#39; de um album especifico</span>
+<div class="viewcode-block" id="danceability_by_album"><a class="viewcode-back" href="../index.html#mod.danceability_by_album">[documentos]</a><span class="k">def</span> <span class="nf">danceability_by_album</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">album</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Printa uma tabela com as n musicas mais e menos &#39;dançáveis&#39; de um album especifico</span>
+
+<span class="sd">    :param df: Dataframe</span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    :param album: Album de músicas</span>
+<span class="sd">    :type album: String</span>
+<span class="sd">    :param n: Número de músicas</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :raises InexistentAlbum: Exceção</span>
+<span class="sd">    :raises NonPositiveValue: _description_</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">album</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Album&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">InexistentAlbum</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NonPositiveValue</span>
+
+        <span class="n">top</span> <span class="o">=</span> <span class="n">get_top</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Album&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">album</span><span class="p">],</span> <span class="s2">&quot;Danceability&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="n">get_bottom</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Album&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">album</span><span class="p">],</span> <span class="s2">&quot;Danceability&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">album</span><span class="si">}</span><span class="s2"> - músicas mais &#39;dançáveis&#39;:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">top</span><span class="p">[[</span><span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="s2">&quot;Danceability&quot;</span><span class="p">]],</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">album</span><span class="si">}</span><span class="s2"> - músicas menos &#39;dançáveis&#39;:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">bottom</span><span class="p">[[</span><span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="s2">&quot;Danceability&quot;</span><span class="p">]],</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">InexistentAlbum</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: album inexistente&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">NonPositiveValue</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: inteiro passado não é positivo&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: dataframe passado não é o correto&quot;</span><span class="p">)</span></div>
+
+<span class="c1"># Printa uma tabela com as n musicas mais e menos &#39;positivas&#39; de um album especifico</span>
+<div class="viewcode-block" id="valence_by_album"><a class="viewcode-back" href="../index.html#mod.valence_by_album">[documentos]</a><span class="k">def</span> <span class="nf">valence_by_album</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">album</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Printa uma tabela com as n musicas mais e menos &#39;positivas&#39; de um album especifico.</span>
+
+<span class="sd">    :param df: Datafrmae</span>
+<span class="sd">    :type df: pd.Dataframe</span>
+<span class="sd">    :param album: Album de músicas</span>
+<span class="sd">    :type album: String</span>
+<span class="sd">    :param n: Número de músicas</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :raises InexistentAlbum: exceção</span>
+<span class="sd">    :raises NonPositiveValue: exceção</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">album</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Album&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">InexistentAlbum</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NonPositiveValue</span>
+
+        <span class="n">top</span> <span class="o">=</span> <span class="n">get_top</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Album&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">album</span><span class="p">],</span> <span class="s2">&quot;Valence&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="n">get_bottom</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Album&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">album</span><span class="p">],</span> <span class="s2">&quot;Valence&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">album</span><span class="si">}</span><span class="s2"> - músicas mais &#39;positivas&#39;:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">top</span><span class="p">[[</span><span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="s2">&quot;Valence&quot;</span><span class="p">]],</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">album</span><span class="si">}</span><span class="s2"> - músicas menos &#39;positivas&#39;:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">bottom</span><span class="p">[[</span><span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="s2">&quot;Valence&quot;</span><span class="p">]],</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">InexistentAlbum</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: album inexistente&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">NonPositiveValue</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: inteiro passado não é positivo&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Erro: dataframe passado não é o correto&quot;</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">A1Taylor</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navegação</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Código do módulo</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Busca rápida</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Ir" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Cleyton Vinicius, Guilherme Queiroz, João Fernandes.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.2.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
