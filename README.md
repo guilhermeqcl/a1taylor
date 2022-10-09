@@ -20,3 +20,6 @@ O projeto é dividido em 4 arquivos:
 O arquivo main.py é o que deve ser rodado para a ver as respostas das perguntas. O mod.py é o arquivo onde todas as funções foram definidas para que pudéssemos responder as perguntas. O arquivo graficos.py constrói a visualização das perguntas do Grupo 1 de perguntas com o auxílio das bibliotecas Seaborn e Matplotlib. Por último, o arquivo cloud.py constrói as nuvens de palavras da segunda, terceira e quarta pergunta do Grupo 2 de perguntas com o uso da biblioteca WordCloud e Matplotlib. 
 
 As imagens geradas pelos arquivos de visualização gráfica estão numa pasta chamada images, separadas por: comparisons, length, popularity, wordclouds
+
+# DOCUMENTAÇÃO: 
+Contida na pasta docs, basta abrir html/index.html
